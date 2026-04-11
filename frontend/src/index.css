@@ -1,0 +1,14 @@
+/* ══════════════════════════════════════════════════════════════
+   TASKFLOW — Main stylesheet entry point
+   Imports all partials in dependency order.
+   ══════════════════════════════════════════════════════════════ */
+
+@import './styles/variables.css';
+@import './styles/base.css';
+@import './styles/animations.css';
+@import './styles/layout.css';
+@import './styles/sidebar.css';
+@import './styles/tasks.css';
+@import './styles/modals.css';
+@import './styles/toast.css';
+@import './styles/responsive.css';

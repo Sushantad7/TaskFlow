@@ -1,0 +1,16 @@
+{
+    "name": "todo-frontend",
+    "version": "1.0.0",
+    "description": "TaskFlow Frontend",
+    "scripts": {
+        "dev": "vite --port 5173 --open",
+        "build": "vite build",
+        "preview": "vite preview"
+    },
+    "devDependencies": {
+        "vite": "^5.1.0"
+    },
+    "dependencies": {
+        "@clerk/clerk-js": "^6.0.0"
+    }
+}

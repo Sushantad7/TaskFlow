@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="TaskFlow – a beautiful, organised todo app with sections and CRUD tasks." />
+  <title>TaskFlow – Stay Organised</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <!-- CSS is now imported via src/main.js (Vite handles it) -->
+</head>
+
+<body>
+
+  <!-- ── SIDEBAR ──────────────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">TaskFlow</span>
+      </div>
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">&#9776;</button>
+    </div>
+
+    <div class="sidebar-stats" id="sidebarStats"></div>
+
+    <nav class="section-nav">
+      <div class="nav-label">SECTIONS</div>
+      <ul id="sectionList"></ul>
+    </nav>
+
+    <button class="btn-add-section" id="btnAddSection">
+      <span>＋</span> New Section
+    </button>
+  </aside>
+
+  <!-- ── MAIN ─────────────────────────────────────────────────────── -->
+  <main class="main" id="mainContent">
+
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        <div class="breadcrumb" id="breadcrumb">Select a section</div>
+      </div>
+      <div class="topbar-right">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode" title="Toggle theme">
+          <span class="theme-icon-dark">🌙</span>
+          <span class="theme-icon-light">☀️</span>
+        </button>
+        <button class="btn-primary" id="btnAddTask" style="display:none">
+          <span>＋</span> Add Task
+        </button>
+        <div id="userButtonContainer"></div>
+      </div>
+    </header>
+
+    <div class="content-area" id="contentArea">
+      <!-- Welcome state (shown until a section is selected) -->
+      <div class="welcome-state" id="welcomeState">
+        <div class="welcome-graphic">✦</div>
+        <h1>Welcome to TaskFlow</h1>
+        <p>Select a section from the sidebar or create a new one to get started.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── MODALS ────────────────────────────────────────────────────── -->
+
+  <!-- Section Modal -->
+  <div class="modal-overlay" id="sectionModal" role="dialog" aria-modal="true" aria-labelledby="sectionModalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="sectionModalTitle">New Section</h2>
+        <button class="modal-close" id="sectionModalClose">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label" for="sectionName">Section Name</label>
+        <input class="form-input" id="sectionName" type="text" placeholder="e.g. Work, Personal…" maxlength="40" />
+
+        <label class="form-label">Icon</label>
+        <div class="emoji-grid" id="emojiGrid"></div>
+        <input type="hidden" id="sectionIconValue" value="📋" />
+
+        <label class="form-label">Accent Color</label>
+        <div class="color-swatches" id="colorSwatches"></div>
+        <input type="hidden" id="sectionColorValue" value="#6366f1" />
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ghost" id="sectionModalCancel">Cancel</button>
+        <button class="btn-primary" id="sectionModalSave">Save Section</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task Modal -->
+  <div class="modal-overlay" id="taskModal" role="dialog" aria-modal="true" aria-labelledby="taskModalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="taskModalTitle">New Task</h2>
+        <button class="modal-close" id="taskModalClose">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label" for="taskTitle">Title <span class="required">*</span></label>
+        <input class="form-input" id="taskTitle" type="text" placeholder="What needs to be done?" maxlength="120" />
+
+        <label class="form-label" for="taskDescription">Description</label>
+        <textarea class="form-input form-textarea" id="taskDescription" placeholder="Add details…" rows="3"></textarea>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="taskPriority">Priority</label>
+            <select class="form-input form-select" id="taskPriority">
+              <option value="low">🟢 Low</option>
+              <option value="medium" selected>🟡 Medium</option>
+              <option value="high">🔴 High</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="taskDueDate">Due Date</label>
+            <input class="form-input" id="taskDueDate" type="date" />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ghost" id="taskModalCancel">Cancel</button>
+        <button class="btn-primary" id="taskModalSave">Save Task</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Delete Modal -->
+  <div class="modal-overlay" id="deleteModal" role="dialog" aria-modal="true">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2 id="deleteModalTitle">Delete?</h2>
+        <button class="modal-close" id="deleteModalClose">✕</button>
+      </div>
+      <div class="modal-body">
+        <p id="deleteModalMessage">Are you sure you want to delete this item? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ghost" id="deleteModalCancel">Cancel</button>
+        <button class="btn-danger" id="deleteModalConfirm">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Entry point: Vite resolves ES modules + CSS imports -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
