@@ -3,7 +3,7 @@
  * Every function returns a parsed JSON response or throws on error.
  */
 
-const BASE_URL = 'http://localhost:3001/api';
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 let getToken = async () => null;
 export function setTokenGetter(fn) { getToken = fn; }
@@ -29,6 +29,11 @@ export const api = {
     createSection: (body)       => apiFetch('/sections', { method: 'POST', body: JSON.stringify(body) }),
     updateSection: (id, body)   => apiFetch(`/sections/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
     deleteSection: (id)         => apiFetch(`/sections/${id}`, { method: 'DELETE' }),
+
+    // ── Settings ──────────────────────────────────────────────
+    getEmailSettings:  ()     => apiFetch('/settings/email'),
+    saveEmailSettings: (body) => apiFetch('/settings/email', { method: 'POST', body: JSON.stringify(body) }),
+    sendTestEmail:     ()     => apiFetch('/settings/email/test', { method: 'POST' }),
 
     // ── Tasks ─────────────────────────────────────────────────
     getTasks:    (sid)          => apiFetch(`/sections/${sid}/tasks`),

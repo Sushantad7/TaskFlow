@@ -8,6 +8,7 @@ import { bindDeleteModal, closeAllModals } from './components/modals.js';
 import { buildEmojiGrid, buildColorSwatches, renderSidebar, bindSidebarEvents } from './components/sidebar.js';
 import { renderSection, showWelcome } from './components/section.js';
 import { openTaskModal, bindTaskModal } from './components/taskModal.js';
+import { openSettings, bindSettings } from './components/settings.js';
 
 
 function initTheme() {
@@ -97,6 +98,11 @@ async function initApp(clerk) {
     // Wire Clerk session token into every API call
     setTokenGetter(() => clerk.session?.getToken() ?? null);
 
+    // Store display name for the welcome screen
+    state.username = clerk.user?.firstName || clerk.user?.username
+        || clerk.user?.primaryEmailAddress?.emailAddress?.split('@')[0]
+        || 'there';
+
     // Render user email + sign-out button in topbar
     const userBtnEl = document.getElementById('userButtonContainer');
     if (userBtnEl) {
@@ -135,6 +141,9 @@ async function initApp(clerk) {
         await onMutate();
         if (!state.activeSectionId) showWelcome();
     });
+
+    bindSettings();
+    document.getElementById('btnSettings').addEventListener('click', openSettings);
 
     await loadSections();
 }

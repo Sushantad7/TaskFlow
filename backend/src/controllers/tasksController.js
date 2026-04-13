@@ -38,7 +38,10 @@ exports.updateTask = (req, res) => {
     if (description !== undefined) task.description = description;
     if (priority !== undefined) task.priority = priority;
     if (dueDate !== undefined) task.dueDate = dueDate;
-    if (completed !== undefined) task.completed = completed;
+    if (completed !== undefined) {
+        task.completed = completed;
+        task.completedAt = completed ? new Date().toISOString() : null;
+    }
 
     res.json(task);
 };

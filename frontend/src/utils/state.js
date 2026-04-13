@@ -9,4 +9,5 @@ export const state = {
     activeSectionId: null,
     taskFilter: 'all',   // 'all' | 'active' | 'completed'
     taskSearch: '',
+    username: '',
 };

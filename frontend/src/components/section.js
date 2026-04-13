@@ -119,14 +119,43 @@ export function renderTasks(section, onMutate, openTaskModal) {
     });
 }
 
-/** Show the welcome / empty state. */
+/** Show the welcome / empty state with live stats. */
 export function showWelcome() {
     breadcrumb.textContent = 'Select a section';
     btnAddTask.style.display = 'none';
-    contentArea.innerHTML = welcomeEl ? welcomeEl.outerHTML
-        : `<div class="welcome-state">
-             <div class="welcome-graphic">✦</div>
-             <h1>Welcome to TaskFlow</h1>
-             <p>Select a section to get started.</p>
-           </div>`;
+
+    const name = state.username || 'there';
+    const allTasks   = state.sections.flatMap(s => s.tasks);
+    const total      = allTasks.length;
+    const done       = allTasks.filter(t => t.completed).length;
+    const overdue    = allTasks.filter(t => !t.completed && t.dueDate && new Date(t.dueDate) < new Date(new Date().toDateString())).length;
+    const rate       = total ? Math.round((done / total) * 100) : 0;
+
+    const statsHtml = total > 0 ? `
+        <div class="welcome-stats">
+            <div class="welcome-stat">
+                <span class="welcome-stat-value">${total}</span>
+                <span class="welcome-stat-label">Total tasks</span>
+            </div>
+            <div class="welcome-stat">
+                <span class="welcome-stat-value" style="color:var(--green)">${done}</span>
+                <span class="welcome-stat-label">Completed</span>
+            </div>
+            <div class="welcome-stat">
+                <span class="welcome-stat-value" style="color:var(--accent)">${rate}%</span>
+                <span class="welcome-stat-label">Done rate</span>
+            </div>
+            ${overdue > 0 ? `<div class="welcome-stat">
+                <span class="welcome-stat-value" style="color:var(--red)">${overdue}</span>
+                <span class="welcome-stat-label">Overdue</span>
+            </div>` : ''}
+        </div>` : '';
+
+    contentArea.innerHTML = `
+        <div class="welcome-state">
+            <div class="welcome-graphic">✦</div>
+            <h1>Hi ${esc(name)}, what are you planning today?</h1>
+            <p>Select a section from the sidebar or create a new one to get started.</p>
+            ${statsHtml}
+        </div>`;
 }

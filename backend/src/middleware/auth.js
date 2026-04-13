@@ -9,6 +9,7 @@ exports.requireAuth = async (req, res, next) => {
         const token = header.slice(7);
         const payload = await verifyToken(token, {
             secretKey: process.env.CLERK_SECRET_KEY,
+            authorizedParties: (process.env.ALLOWED_ORIGINS || 'http://localhost:5173').split(','),
         });
         req.auth = { userId: payload.sub };
         next();

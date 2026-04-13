@@ -400,3 +400,14 @@
 .due-date-badge.due-soon {
     color: var(--yellow);
 }
+
+/* ── Overdue card ─────────────────────────────────────────── */
+.task-card.overdue {
+    border-color: rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.04);
+}
+
+.task-card.overdue::before {
+    background: var(--red);
+    opacity: 1;
+}
