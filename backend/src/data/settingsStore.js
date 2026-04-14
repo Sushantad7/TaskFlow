@@ -1,29 +1,26 @@
-const fs = require('fs');
-const path = require('path');
-
-const FILE = path.join(__dirname, 'userSettings.json');
-
-function load() {
-    if (!fs.existsSync(FILE)) return {};
-    try { return JSON.parse(fs.readFileSync(FILE, 'utf8')); }
-    catch { return {}; }
-}
-
-function save(data) {
-    fs.writeFileSync(FILE, JSON.stringify(data, null, 2));
-}
+const { getDB } = require('./db');
 
 const defaults = { enabled: false, sendHour: 12, sendMinute: 0, displayName: '' };
 
-exports.getUserSettings = (userId) => {
-    return { ...defaults, ...load()[userId] };
+const getUserSettings = async (userId) => {
+    const doc = await getDB().collection('settings').findOne({ userId });
+    return { ...defaults, ...doc };
 };
 
-exports.setUserSettings = (userId, updates) => {
-    const all = load();
-    all[userId] = { ...defaults, ...all[userId], ...updates };
-    save(all);
-    return all[userId];
+const setUserSettings = async (userId, updates) => {
+    const current = await getUserSettings(userId);
+    const settings = { ...current, ...updates };
+    await getDB().collection('settings').updateOne(
+        { userId },
+        { $set: { userId, ...settings } },
+        { upsert: true }
+    );
+    return settings;
 };
 
-exports.getAllSettings = () => load();
+const getAllSettings = async () => {
+    const docs = await getDB().collection('settings').find({ enabled: true }).toArray();
+    return docs.reduce((acc, doc) => { acc[doc.userId] = doc; return acc; }, {});
+};
+
+module.exports = { getUserSettings, setUserSettings, getAllSettings };

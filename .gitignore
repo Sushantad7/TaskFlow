@@ -14,8 +14,9 @@ build/
 *.log
 npm-debug.log*
 
-# Generated data files (contain PII)
+# Generated data files (no longer used — data is in MongoDB)
 backend/src/data/userSettings.json
+backend/src/data/sections.json
 
 # OS
 .DS_Store
