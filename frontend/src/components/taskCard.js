@@ -22,7 +22,8 @@ export function buildTaskCard(task, section, onMutate, openTaskModalFn) {
         low: '#10b981',
     }[task.priority] || '#6366f1';
 
-    const isOverdue = !task.completed && task.dueDate && new Date(task.dueDate) < new Date(new Date().toDateString());
+    const isOverdue = !task.completed && task.dueDate &&
+        new Date(task.dueDate.substring(0, 10) + 'T00:00:00') < new Date(new Date().toDateString());
 
     const div = document.createElement('div');
     div.className = `task-card${task.completed ? ' completed' : ''}${isOverdue ? ' overdue' : ''}`;

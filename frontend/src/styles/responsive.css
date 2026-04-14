@@ -27,22 +27,102 @@
     }
 
     .topbar {
-        padding: 0 16px;
+        padding: 0 12px;
+        gap: 8px;
+    }
+
+    .breadcrumb {
+        font-size: 15px;
     }
 
     .content-area {
-        padding: 20px 16px;
+        padding: 16px 12px;
     }
 
+    /* Task grid: single column */
     .tasks-grid {
         grid-template-columns: 1fr;
+        gap: 12px;
     }
 
+    /* Always show edit/delete buttons on mobile (no hover on touch) */
+    .task-card-actions {
+        display: flex;
+    }
+
+    /* Section hero: stack vertically on very small screens */
+    .section-hero {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 18px 16px;
+    }
+
+    .section-hero-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 28px;
+    }
+
+    .section-hero-title {
+        font-size: 18px;
+    }
+
+    /* Filter bar: wrap cleanly */
+    .filter-bar {
+        gap: 8px;
+    }
+
+    /* Search: full width below chips */
+    .search-input-wrap {
+        width: 100%;
+        margin-left: 0;
+        order: 10;
+    }
+
+    .search-input {
+        width: 100%;
+    }
+
+    .search-input:focus {
+        width: 100%;
+    }
+
+    /* Modal: full-width on mobile */
+    .modal-overlay {
+        padding: 0;
+        align-items: flex-end;
+    }
+
+    .modal {
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        max-width: 100%;
+        max-height: 90vh;
+    }
+
+    .modal-body {
+        max-height: 55vh;
+    }
+
+    /* Form grid: single column */
     .form-row {
         grid-template-columns: 1fr;
     }
 
-    .modal {
-        border-radius: var(--radius-lg);
+    /* Welcome stats: wrap and shrink */
+    .welcome-stats {
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 16px 20px;
+        gap: 16px;
+    }
+
+    .welcome-state h1 {
+        font-size: 20px;
+    }
+
+    /* User email: hide on very small screens, keep sign out */
+    .user-email {
+        display: none;
     }
 }

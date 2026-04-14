@@ -27,7 +27,8 @@ export function hexToRgb(hex) {
 export function getDueBadge(dueDate, completed) {
     if (!dueDate) return '';
 
-    const due = new Date(dueDate);
+    // Parse as local midnight to avoid UTC-offset shifting the date
+    const due = new Date(dueDate.substring(0, 10) + 'T00:00:00');
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
