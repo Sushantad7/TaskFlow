@@ -14,6 +14,7 @@ function getRemark(rate) {
 function buildHtml({ name, sections, totalTasks, completedTasks, completionRate, date }) {
     const { emoji, line } = getRemark(completionRate);
     const pendingTasks = totalTasks - completedTasks;
+    const pendingPct = totalTasks ? Math.max(0, 100 - completionRate) : 0;
 
     const sectionRows = sections.map(s => {
         const done  = s.tasks.filter(t => t.completed).length;
@@ -53,11 +54,24 @@ function buildHtml({ name, sections, totalTasks, completedTasks, completionRate,
         <div style="margin-top:8px;color:#f0f0ff;font-size:14px;font-style:italic">"${line}"</div>
       </div>
       ${totalTasks > 0 ? `
+      <div style="background:#111120;border:1px solid #1e1e38;border-radius:14px;padding:18px 16px;margin-bottom:24px">
+        <div style="color:#f0f0ff;font-size:13px;font-weight:600;margin-bottom:10px;letter-spacing:.3px">Progress Graph</div>
+        <div style="height:14px;border-radius:99px;overflow:hidden;background:#1c1c34;display:flex">
+          <div style="width:${completionRate}%;background:linear-gradient(90deg,#10b981,#34d399)"></div>
+          <div style="width:${pendingPct}%;background:linear-gradient(90deg,#ef4444,#f97316)"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px;color:#9898c8;font-size:12px">
+          <span>✅ Completed: <strong style="color:#f0f0ff">${completedTasks}</strong></span>
+          <span>🕒 Pending: <strong style="color:#f0f0ff">${pendingTasks}</strong></span>
+          <span>📌 Total: <strong style="color:#f0f0ff">${totalTasks}</strong></span>
+        </div>
+      </div>` : ''}
+      ${totalTasks > 0 ? `
       <h3 style="margin:0 0 12px;color:#f0f0ff;font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Section Breakdown</h3>
       <table style="width:100%;border-collapse:collapse;font-size:13px">${sectionRows}</table>` : ''}
       ${pendingTasks > 0
         ? `<div style="margin-top:24px;background:#16162a;border-left:3px solid #6366f1;padding:14px 16px;border-radius:0 8px 8px 0">
-             <span style="color:#9898c8;font-size:13px">📌 <strong style="color:#f0f0ff">${pendingTasks} task${pendingTasks !== 1 ? 's' : ''}</strong> still pending — keep going.</span>
+             <span style="color:#9898c8;font-size:13px">📌 <strong style="color:#f0f0ff">${pendingTasks} task${pendingTasks !== 1 ? 's' : ''}</strong> still pending. Still the day is left, you can push yourself. All the best.</span>
            </div>`
         : `<div style="margin-top:24px;background:#16162a;border-left:3px solid #10b981;padding:14px 16px;border-radius:0 8px 8px 0">
              <span style="color:#9898c8;font-size:13px">🎉 All tasks done across every section. Exceptional.</span>

@@ -3,7 +3,6 @@ const router = express.Router();
 const { getUserSettings, setUserSettings } = require('../data/settingsStore');
 const { getSectionsForUser } = require('../data/store');
 const { sendDailySummary } = require('../services/emailService');
-const { updateCrontab } = require('../services/crontabService');
 
 router.get('/email', async (req, res, next) => {
     try {
@@ -13,9 +12,13 @@ router.get('/email', async (req, res, next) => {
 
 router.post('/email', async (req, res, next) => {
     try {
-        const { enabled, displayName, sendHour, sendMinute } = req.body;
-        const settings = await setUserSettings(req.auth.userId, { enabled, displayName, sendHour, sendMinute });
-        if (enabled) updateCrontab(settings.sendHour, settings.sendMinute);
+        const { enabled, displayName } = req.body;
+        const settings = await setUserSettings(req.auth.userId, {
+            enabled,
+            displayName,
+            sendHour: 15,
+            sendMinute: 30,
+        });
         res.json(settings);
     } catch (err) { next(err); }
 });

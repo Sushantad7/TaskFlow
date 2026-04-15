@@ -6,8 +6,6 @@ const modal = document.getElementById('settingsModal');
 const form = {
     enabled:     () => document.getElementById('settingEnabled'),
     displayName: () => document.getElementById('settingName'),
-    sendHour:    () => document.getElementById('settingHour'),
-    sendMinute:  () => document.getElementById('settingMinute'),
 };
 
 export async function openSettings() {
@@ -15,8 +13,6 @@ export async function openSettings() {
         const s = await api.getEmailSettings();
         form.enabled().checked    = s.enabled;
         form.displayName().value  = s.displayName || '';
-        form.sendHour().value     = s.sendHour  ?? 12;
-        form.sendMinute().value   = s.sendMinute ?? 45;
     } catch {
         showToast('Could not load settings', 'error');
     }
@@ -33,8 +29,6 @@ export function bindSettings() {
             await api.saveEmailSettings({
                 enabled:     form.enabled().checked,
                 displayName: form.displayName().value.trim(),
-                sendHour:    Number(form.sendHour().value),
-                sendMinute:  Number(form.sendMinute().value),
             });
             showToast('Settings saved ✓', 'success');
             closeModal(modal);

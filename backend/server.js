@@ -6,6 +6,7 @@ const { connectDB } = require('./src/data/db');
 const routes = require('./src/routes');
 const internalRoutes = require('./src/routes/internal');
 const { notFound, errorHandler } = require('./src/middleware/error');
+const { startDailySummaryScheduler } = require('./src/services/dailySummaryScheduler');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -24,7 +25,10 @@ app.use(notFound);
 app.use(errorHandler);
 
 connectDB().then(() => {
-    app.listen(PORT, () => console.log(`✅  TaskFlow API  →  http://localhost:${PORT}`));
+    app.listen(PORT, () => {
+        console.log(`✅  TaskFlow API  →  http://localhost:${PORT}`);
+        startDailySummaryScheduler();
+    });
 }).catch(err => {
     console.error('Failed to connect to MongoDB:', err.message);
     process.exit(1);
