@@ -49,9 +49,7 @@ async function onMutate() {
     }
 }
 
-// ══════════════════════════════════════════════════════════════
 //  SECTION SELECTION
-// ══════════════════════════════════════════════════════════════
 function selectSection(id) {
     state.activeSectionId = id;
     state.taskFilter = 'all';
@@ -63,16 +61,16 @@ function selectSection(id) {
     if (section) renderSection(section, onMutate, openTaskModal);
 }
 
-// ══════════════════════════════════════════════════════════════
+// 
 //  MOBILE SIDEBAR
-// ══════════════════════════════════════════════════════════════
+// 
 const sidebar = document.getElementById('sidebar');
 function openMobileSidebar() { sidebar.classList.add('open'); }
 function closeMobileSidebar() { sidebar.classList.remove('open'); }
 
-// ══════════════════════════════════════════════════════════════
+// 
 //  GLOBAL EVENT BINDINGS
-// ══════════════════════════════════════════════════════════════
+// 
 function bindGlobalEvents() {
     document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 
@@ -89,9 +87,7 @@ function bindGlobalEvents() {
     });
 }
 
-// ══════════════════════════════════════════════════════════════
 //  BOOT
-// ══════════════════════════════════════════════════════════════
 async function initApp(clerk) {
     initTheme();
 

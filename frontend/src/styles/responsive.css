@@ -31,6 +31,15 @@
         gap: 8px;
     }
 
+    .topbar-right {
+        gap: 8px;
+    }
+
+    .btn-primary#btnAddTask {
+        padding: 9px 12px;
+        font-size: 12px;
+    }
+
     .breadcrumb {
         font-size: 15px;
     }
@@ -124,5 +133,75 @@
     /* User email: hide on very small screens, keep sign out */
     .user-email {
         display: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .topbar {
+        height: auto;
+        min-height: var(--topbar-h);
+        padding: 8px 10px;
+    }
+
+    .topbar-left {
+        min-width: 0;
+        gap: 10px;
+    }
+
+    .breadcrumb {
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 45vw;
+    }
+
+    .content-area {
+        padding: 14px 10px;
+    }
+
+    .section-hero {
+        margin-bottom: 18px;
+        padding: 14px 12px;
+    }
+
+    .filter-chip {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+
+    .task-card {
+        padding: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .topbar-right {
+        gap: 6px;
+    }
+
+    .theme-toggle {
+        width: 36px;
+        height: 36px;
+        font-size: 15px;
+    }
+
+    .btn-primary#btnAddTask {
+        padding: 8px 10px;
+        font-size: 11px;
+    }
+
+    .btn-primary#btnAddTask span {
+        display: none;
+    }
+
+    .sidebar {
+        width: min(85vw, 320px);
+    }
+
+    .welcome-graphic {
+        width: 96px;
+        height: 96px;
+        font-size: 52px;
     }
 }
