@@ -23,4 +23,19 @@ const getAllSettings = async () => {
     return docs.reduce((acc, doc) => { acc[doc.userId] = doc; return acc; }, {});
 };
 
-module.exports = { getUserSettings, setUserSettings, getAllSettings };
+const getEnabledSettings = async () => getDB().collection('settings').find({ enabled: true }).toArray();
+
+const markSummarySentForDate = async (userId, dateKey) => {
+    await getDB().collection('settings').updateOne(
+        { userId },
+        { $set: { lastSentDateKey: dateKey, lastSentAt: new Date() } }
+    );
+};
+
+module.exports = {
+    getUserSettings,
+    setUserSettings,
+    getAllSettings,
+    getEnabledSettings,
+    markSummarySentForDate,
+};
