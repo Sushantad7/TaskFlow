@@ -8,6 +8,7 @@ export const state = {
     sections: [],
     activeSectionId: null,
     taskFilter: 'all',   // 'all' | 'active' | 'completed'
+    taskGroupMode: 'smart', // 'smart' | 'none'
     taskSearch: '',
     username: '',
 };

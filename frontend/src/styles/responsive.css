@@ -35,7 +35,7 @@
         gap: 8px;
     }
 
-    .btn-primary#btnAddTask {
+    .section-add-task-btn {
         padding: 9px 12px;
         font-size: 12px;
     }
@@ -186,12 +186,12 @@
         font-size: 15px;
     }
 
-    .btn-primary#btnAddTask {
+    .section-add-task-btn {
         padding: 8px 10px;
         font-size: 11px;
     }
 
-    .btn-primary#btnAddTask span {
+    .section-add-task-btn span {
         display: none;
     }
 
