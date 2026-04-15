@@ -115,6 +115,7 @@ exports.sendDailySummary = async ({ userId, displayName, sections }) => {
 
     if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.message || `Resend API error: ${res.status}`);
+        const details = err.message || err.error || JSON.stringify(err);
+        throw new Error(`Resend API error (${res.status}): ${details}`);
     }
 };
