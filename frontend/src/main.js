@@ -53,6 +53,7 @@ async function onMutate() {
 function selectSection(id) {
     state.activeSectionId = id;
     state.taskFilter = 'all';
+    state.taskGroupMode = 'smart';
     state.taskSearch = '';
     closeMobileSidebar();
 
@@ -73,11 +74,6 @@ function closeMobileSidebar() { sidebar.classList.remove('open'); }
 // 
 function bindGlobalEvents() {
     document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-
-    document.getElementById('btnAddTask').addEventListener('click', () => {
-        const sec = state.sections.find(s => s.id === state.activeSectionId);
-        if (sec) openTaskModal(sec);
-    });
 
     document.getElementById('mobileMenuBtn').addEventListener('click', openMobileSidebar);
     document.getElementById('sidebarToggle').addEventListener('click', closeMobileSidebar);

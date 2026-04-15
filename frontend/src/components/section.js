@@ -14,8 +14,42 @@ import { state } from '../utils/state.js';
 // ── DOM refs ─────────────────────────────────────────────────
 const contentArea = document.getElementById('contentArea');
 const breadcrumb = document.getElementById('breadcrumb');
-const btnAddTask = document.getElementById('btnAddTask');
 const welcomeEl = document.getElementById('welcomeState');
+
+function dateAtLocalMidnight(isoDate) {
+    if (!isoDate) return null;
+    return new Date(isoDate.substring(0, 10) + 'T00:00:00');
+}
+
+function getTaskDayGroup(task) {
+    if (!task.dueDate) return 'no-due-date';
+    const due = dateAtLocalMidnight(task.dueDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const diff = Math.round((due - today) / 86_400_000);
+    if (diff < 0) return 'overdue';
+    if (diff === 0) return 'today';
+    if (diff === 1) return 'tomorrow';
+    return 'upcoming';
+}
+
+function getTaskGroups(tasks, mode) {
+    if (mode === 'none') {
+        return [{ id: 'all', label: 'All Tasks', icon: '📋', tasks }];
+    }
+
+    const groups = [
+        { id: 'overdue', label: 'Overdue', icon: '🚨', tasks: [] },
+        { id: 'today', label: 'Today', icon: '📌', tasks: [] },
+        { id: 'tomorrow', label: 'Tomorrow', icon: '⏭', tasks: [] },
+        { id: 'upcoming', label: 'Upcoming', icon: '🗓', tasks: [] },
+        { id: 'no-due-date', label: 'No Due Date', icon: '🧩', tasks: [] },
+    ];
+
+    const byId = Object.fromEntries(groups.map(g => [g.id, g]));
+    tasks.forEach(task => byId[getTaskDayGroup(task)].tasks.push(task));
+    return groups.filter(g => g.tasks.length > 0);
+}
 
 /**
  * Render the section hero + filter bar + task grid.
@@ -25,7 +59,6 @@ const welcomeEl = document.getElementById('welcomeState');
  */
 export function renderSection(section, onMutate, openTaskModal) {
     breadcrumb.textContent = `${section.icon} ${section.name}`;
-    btnAddTask.style.display = 'flex';
 
     const tasks = section.tasks || [];
     const done = tasks.filter(t => t.completed).length;
@@ -46,12 +79,19 @@ export function renderSection(section, onMutate, openTaskModal) {
               <span class="progress-text">${progress}%</span>
             </div>
           </div>
+          <button class="btn-primary section-add-task-btn" id="sectionAddTaskBtn">
+            <span>＋</span> Add Task
+          </button>
         </div>
 
         <div class="filter-bar">
           <button class="filter-chip${state.taskFilter === 'all' ? ' active' : ''}" data-filter="all">All (${tasks.length})</button>
           <button class="filter-chip${state.taskFilter === 'active' ? ' active' : ''}" data-filter="active">Active (${tasks.filter(t => !t.completed).length})</button>
           <button class="filter-chip${state.taskFilter === 'completed' ? ' active' : ''}" data-filter="completed">Done (${done})</button>
+          <div class="group-toggle-wrap">
+            <button class="group-toggle${state.taskGroupMode === 'smart' ? ' active' : ''}" data-group-mode="smart">Group by Day</button>
+            <button class="group-toggle${state.taskGroupMode === 'none' ? ' active' : ''}" data-group-mode="none">Flat List</button>
+          </div>
           <div class="search-input-wrap">
             <span class="search-icon">🔍</span>
             <input class="search-input" id="taskSearchInput" type="text"
@@ -69,6 +109,15 @@ export function renderSection(section, onMutate, openTaskModal) {
             renderSection(section, onMutate, openTaskModal);
         });
     });
+
+    contentArea.querySelectorAll('.group-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            state.taskGroupMode = btn.dataset.groupMode;
+            renderSection(section, onMutate, openTaskModal);
+        });
+    });
+
+    document.getElementById('sectionAddTaskBtn').addEventListener('click', () => openTaskModal(section));
 
     // Search input
     const searchInput = document.getElementById('taskSearchInput');
@@ -112,17 +161,30 @@ export function renderTasks(section, onMutate, openTaskModal) {
         return;
     }
 
-    container.innerHTML = '<div class="tasks-grid" id="tasksGrid"></div>';
-    const grid = document.getElementById('tasksGrid');
-    tasks.forEach(task => {
-        grid.appendChild(buildTaskCard(task, section, onMutate, openTaskModal));
+    const groupMode = state.taskGroupMode || 'smart';
+    const groups = getTaskGroups(tasks, groupMode);
+
+    container.innerHTML = groups.map(group => `
+      <section class="task-group">
+        <header class="task-group-header">
+          <h3>${group.icon} ${group.label}</h3>
+          <span>${group.tasks.length}</span>
+        </header>
+        <div class="tasks-grid" id="tasksGrid-${group.id}"></div>
+      </section>
+    `).join('');
+
+    groups.forEach(group => {
+        const grid = document.getElementById(`tasksGrid-${group.id}`);
+        group.tasks.forEach(task => {
+            grid.appendChild(buildTaskCard(task, section, onMutate, openTaskModal));
+        });
     });
 }
 
 /** Show the welcome / empty state with live stats. */
 export function showWelcome() {
     breadcrumb.textContent = 'Select a section';
-    btnAddTask.style.display = 'none';
 
     const name = state.username || 'there';
     const allTasks   = state.sections.flatMap(s => s.tasks);
