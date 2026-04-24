@@ -278,3 +278,36 @@
     font-size: 11px;
     color: var(--accent-hover);
 }
+
+/* ── Recurrence day picker ────────────────────────────────── */
+.recurrence-days {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.day-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--bg-deep);
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all var(--anim);
+}
+
+.day-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.day-btn.selected {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 0 12px var(--accent-glow);
+}

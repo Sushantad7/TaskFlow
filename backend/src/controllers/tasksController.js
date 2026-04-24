@@ -9,12 +9,15 @@ exports.createTask = async (req, res, next) => {
         const { title, description, priority, dueDate } = req.body;
         if (!title || !title.trim()) return res.status(400).json({ error: 'Task title is required' });
 
+        const { recurrence, recurrenceDays } = req.body;
         const task = {
             id: uuidv4(),
             title: title.trim(),
             description: description || '',
             priority: priority || 'medium',
             dueDate: dueDate || null,
+            recurrence: recurrence || 'none',
+            recurrenceDays: recurrence === 'weekly' && Array.isArray(recurrenceDays) ? recurrenceDays : [],
             completed: false,
             createdAt: new Date().toISOString(),
             completedAt: null,
@@ -30,12 +33,14 @@ exports.updateTask = async (req, res, next) => {
         const task = req.section.tasks.find(t => t.id === req.params.taskId);
         if (!task) return res.status(404).json({ error: 'Task not found' });
 
-        const { title, description, priority, dueDate, completed } = req.body;
-        if (title       !== undefined) task.title       = title.trim();
-        if (description !== undefined) task.description = description;
-        if (priority    !== undefined) task.priority    = priority;
-        if (dueDate     !== undefined) task.dueDate     = dueDate;
-        if (completed   !== undefined) {
+        const { title, description, priority, dueDate, completed, recurrence, recurrenceDays } = req.body;
+        if (title           !== undefined) task.title           = title.trim();
+        if (description     !== undefined) task.description     = description;
+        if (priority        !== undefined) task.priority        = priority;
+        if (dueDate         !== undefined) task.dueDate         = dueDate;
+        if (recurrence      !== undefined) task.recurrence      = recurrence;
+        if (recurrenceDays  !== undefined) task.recurrenceDays  = Array.isArray(recurrenceDays) ? recurrenceDays : [];
+        if (completed       !== undefined) {
             task.completed   = completed;
             task.completedAt = completed ? new Date().toISOString() : null;
         }

@@ -20,6 +20,21 @@ export function hexToRgb(hex) {
     return `rgb(${r}, ${g}, ${b})`;
 }
 
+const DAY_NAMES = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
+/** Build the recurrence badge HTML for a task card. Returns '' when recurrence is none/unset. */
+export function getRecurrenceBadge(recurrence, recurrenceDays) {
+    if (!recurrence || recurrence === 'none') return '';
+    if (recurrence === 'daily') return `<span class="recurrence-badge">↻ Daily</span>`;
+    if (recurrence === 'weekly') {
+        const days = Array.isArray(recurrenceDays) && recurrenceDays.length
+            ? recurrenceDays.map(d => DAY_NAMES[d]).join(' ')
+            : 'Weekly';
+        return `<span class="recurrence-badge">↻ ${days}</span>`;
+    }
+    return '';
+}
+
 /**
  * Build the due-date badge HTML string for a task card.
  * Returns '' when no due date is set.

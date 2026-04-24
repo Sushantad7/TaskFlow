@@ -1,8 +1,48 @@
 const { getSectionsForUser, persistSections, uuidv4 } = require('../data/store');
 
+// Returns today's date string and day-of-week in NPT (UTC+5:45)
+function getTodayNPT() {
+    const utcMs = Date.now();
+    const nptMs = utcMs + (5 * 60 + 45) * 60_000;
+    const d = new Date(nptMs);
+    return {
+        dateStr: d.toISOString().substring(0, 10),
+        dayOfWeek: d.getUTCDay(), // 0=Sun … 6=Sat
+    };
+}
+
+function shouldReset(task, today) {
+    if (!task.completed || !task.recurrence || task.recurrence === 'none') return false;
+    const completedDate = task.completedAt ? task.completedAt.substring(0, 10) : null;
+    if (!completedDate || completedDate >= today.dateStr) return false;
+
+    if (task.recurrence === 'daily') return true;
+
+    if (task.recurrence === 'weekly') {
+        const days = Array.isArray(task.recurrenceDays) ? task.recurrenceDays : [];
+        return days.includes(today.dayOfWeek);
+    }
+    return false;
+}
+
 exports.getSections = async (req, res, next) => {
     try {
-        res.json(await getSectionsForUser(req.auth.userId));
+        const sections = await getSectionsForUser(req.auth.userId);
+        const today = getTodayNPT();
+        let dirty = false;
+
+        for (const section of sections) {
+            for (const task of section.tasks) {
+                if (shouldReset(task, today)) {
+                    task.completed   = false;
+                    task.completedAt = null;
+                    dirty = true;
+                }
+            }
+        }
+
+        if (dirty) await persistSections(req.auth.userId, sections);
+        res.json(sections);
     } catch (err) { next(err); }
 };
 

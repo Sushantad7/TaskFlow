@@ -3,7 +3,7 @@
  * Has no direct DOM queries; callers pass in section + task data.
  */
 
-import { esc, getDueBadge } from '../utils/helpers.js';
+import { esc, getDueBadge, getRecurrenceBadge } from '../utils/helpers.js';
 import { api } from '../api/api.js';
 import { showToast } from './toast.js';
 import { confirmDelete } from './modals.js';
@@ -49,6 +49,7 @@ export function buildTaskCard(task, section, onMutate, openTaskModalFn) {
       <div class="task-meta">
         <span class="priority-badge ${task.priority}">${task.priority}</span>
         ${getDueBadge(task.dueDate, task.completed)}
+        ${getRecurrenceBadge(task.recurrence, task.recurrenceDays)}
       </div>`;
 
     // Toggle complete
